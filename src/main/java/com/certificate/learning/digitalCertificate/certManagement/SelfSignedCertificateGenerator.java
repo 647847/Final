@@ -48,6 +48,8 @@ public class SelfSignedCertificateGenerator {
         v3CertGen.setIssuerDN(new X509Principal(CERTIFICATE_DN));
         v3CertGen.setNotBefore(new Date(System.currentTimeMillis() - 1000L * 60 * 60 * 24*2));
         v3CertGen.setNotAfter(new Date(System.currentTimeMillis() + (1000L * 60 * 60 * 24*365*IssueYears)));
+       // v3CertGen.setNotAfter(new Date(System.currentTimeMillis() + (1000L * 60 * 60 * 24*0)));
+        
         v3CertGen.setSubjectDN(new X509Principal(CERTIFICATE_DN));
         v3CertGen.setPublicKey(keyPair.getPublic());
         v3CertGen.setSignatureAlgorithm("SHA256WithRSAEncryption");
@@ -81,6 +83,7 @@ public class SelfSignedCertificateGenerator {
         certificates1.setPrivatekey(new String(Base64.encode(key.getEncoded())));
         certificates1.setPublickey(new String(Base64.encode(cert.getPublicKey().getEncoded())));
 
-    }}
+    }
+    }
 
 

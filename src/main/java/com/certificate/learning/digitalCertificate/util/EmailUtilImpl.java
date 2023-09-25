@@ -22,7 +22,7 @@ public class EmailUtilImpl implements EmailUtil{
         MimeMessage message =sender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setFrom("tejaswinibere@gmail.com");
+            helper.setFrom("telstramgt@gmail.com");
             helper.setTo(toAddress);
             helper.setText(body);
             helper.setSubject(subject);
@@ -40,12 +40,36 @@ public class EmailUtilImpl implements EmailUtil{
     public void sendEmail(String toAddress, String subject, String body) {
         //for simplemailmessage
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("tejaswinibere@gmail.com");
+        message.setFrom("telstramgt@gmail.com");
         message.setTo(toAddress);
         message.setText(body);
         message.setSubject(subject);
         sender.send(message);
 
     }
+	/*@Autowired
+    private JavaMailSender javaMailSender;
 
+    public void sendMail(String toEmail, String subject,String body,String attachment)
+    {
+    	MimeMessage mimeMessage=javaMailSender.createMimeMessage();
+    	 try {
+    	MimeMessageHelper helper=new MimeMessageHelper(mimeMessage, true);
+    	helper.setFrom("telstramgt@gmail.com");
+    	helper.setTo(toEmail);
+    	helper.setText(body);
+    	helper.setSubject(subject);
+    	
+    	FileSystemResource fileSystemResource= new FileSystemResource(new File(attachment));
+    	helper.addAttachment(fileSystemResource.getFilename(),fileSystemResource);
+    	 }
+    	 catch (MessagingException e) {
+             // TODO Auto-generated catch block
+             e.printStackTrace();
+         }
+    	 
+    	javaMailSender.send(mimeMessage);
+    	
+    }
+*/
 }

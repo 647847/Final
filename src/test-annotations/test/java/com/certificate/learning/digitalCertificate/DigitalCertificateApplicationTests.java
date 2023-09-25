@@ -60,7 +60,7 @@ class DigitalCertificateApplicationTests {
 		userForm.setCn("ssCert");
 		userForm.setCountry("India");
 		userForm.setEmail("abc@gmail.com");
-		userForm.setName("pooja");
+		userForm.setName("Patel");
 		userForm.setOrganization("Telstra");
 		userForm.setState("Ts");
 		userForm.setLocality("Hyd");

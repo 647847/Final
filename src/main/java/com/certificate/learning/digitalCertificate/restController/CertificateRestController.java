@@ -118,7 +118,8 @@ public class CertificateRestController {
     public ResponseEntity<String> getCertificateByAlias(@PathVariable("alias") String alias,  Model model) throws CertificateEncodingException {
         try {
             String s;
-            s= certificateService.getCertificateByAlias(alias);
+           // s= certificateService.getCertificateByAlias(alias);
+            s= certificateService.usercerts(alias);
             if(s.isEmpty()) {
                 throw new CertificatesNotFoundException("Certificate Not Found: There is no certificate with "+alias+ " as an aliasname in db");
             }

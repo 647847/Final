@@ -8,6 +8,8 @@ import com.certificate.learning.digitalCertificate.certManagement.*;
 import com.certificate.learning.digitalCertificate.exception.CertificatesNotFoundException;
 import com.certificate.learning.digitalCertificate.repository.CertificatesRepository;
 import com.certificate.learning.digitalCertificate.util.EmailUtil;
+import com.certificate.learning.digitalCertificate.certManagement.RenewCertificate;
+
 import org.bouncycastle.util.encoders.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -84,18 +86,19 @@ public class CertificateServiceImpl implements CertificateService{
     public String generateUnsignedCertificate(UserForm userForm) throws Exception {
         try {
             unsignedCertificate c = new unsignedCertificate();
-            String CERTIFICATE_DN = "C= " + userForm.getCountry() + ", ST=" + userForm.getState() +", L=" + userForm.getLocality() +", O=" + userForm.getOrganization() +  ", CN=" + userForm.getCn()+  ", EMAILADDRESS=" + userForm.getEmail();
-            Certificates cert = c.create(userForm.getAlias(), CERTIFICATE_DN);
-            
-            cert.setMail(userForm.getEmail());
-            cert.setUsername(userForm.getName());
-            certificatesRepository.save(cert);
+            String CERTIFICATE_DN = "CN=" + userForm.getCn() + ", O=" + userForm.getOrganization() + ", L=" + userForm.getLocality() + ", ST=" + userForm.getState() + ", C= " + userForm.getCountry() + ", E=" + userForm.getEmail();
+            X509Certificate cert = c.create(userForm.getAlias(), CERTIFICATE_DN);
+            Certificates s = c.saveFile(cert, "src\\main\\java\\com\\certificate\\learning\\digitalCertificate\\cer/" + userForm.getAlias() + ".cer");
+            s.setMail(userForm.getEmail());
+            s.setUsername(userForm.getName());
+            certificatesRepository.save(s);
             emailUtil.sendEmailWithAttachment(userForm.getEmail(),
                     "Unsigned CERTIFICATE",
                     "Dear User, \nHere is your certificate \nIt is ready for installation to use....\n\n\nTHANK YOU",
                     "src\\main\\java\\com\\certificate\\learning\\digitalCertificate\\cer/" + userForm.getAlias() + ".cer");
             
-            return cert.getCertificatetest();
+            return new String(Base64.encode(cert.getEncoded()));
+            
         }
         catch(Exception e) {
             throw new CertificatesNotFoundException("Service: Issue while generating CA Signed cetificate: "+e.getMessage());
@@ -105,16 +108,11 @@ public class CertificateServiceImpl implements CertificateService{
     @Override
     public String generateSignedCertificate(UserForm userForm) {
         try {
-            Certificates certificates = certificatesRepository.getcertest(userForm.getAlias());
-            KeyFactory keyFact = KeyFactory.getInstance("RSA");
-            PrivateKey pk = keyFact.generatePrivate(new PKCS8EncodedKeySpec(java.util.Base64.getDecoder().decode(certificates.getPrivatekey().getBytes("UTF-8"))));
-            String dec= EncryptionDecryptionAES.decrypt(certificates.getCertificatetest(),pk);
-            X509Certificate certificate = EncryptionDecryptionAES.convertToX509Cert(dec);
-
+            
 
             SignedCertificateGenerator c = new SignedCertificateGenerator();
             String CERTIFICATE_DN = "CN=" + userForm.getCn() + ", O=" + userForm.getOrganization() + ", L=" + userForm.getLocality() + ", ST=" + userForm.getState() + ", C= " + userForm.getCountry() + ", E=" + userForm.getEmail();
-            X509Certificate certi = c.createSignedCertificate(certificate, pk, CERTIFICATE_DN, userForm.getAlias());
+            X509Certificate certi = c.createSignedCertificate(userForm.getAlias(), CERTIFICATE_DN);
             Certificates s = c.saveFile(certi, "src\\main\\java\\com\\certificate\\learning\\digitalCertificate\\cer/" + userForm.getAlias() + ".cer");
             s.setMail(userForm.getEmail());
             s.setUsername(userForm.getName());
