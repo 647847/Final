@@ -137,7 +137,7 @@ public class CertificateServiceImpl implements CertificateService{
 
    //this is working
     @Override
-    @Scheduled(cron = "0 0 12 * * ?")
+    @Scheduled(cron = "0 25 10 * * ?")
     public void notifyExpiry() throws Exception {
         List<Certificates> certificates = (List<Certificates>) certificatesRepository.findAll();
         for (int i = 0; i < certificates.size(); i++) {

@@ -22,7 +22,7 @@ public interface CertificatesRepository extends CrudRepository<Certificates,Inte
 
     @Transactional
     @Modifying
-    public void deleteById(Integer id);
+    public void deleteById(String id);
 
     @Query("select p from Certificates p  where p.username like :name")
     public List<Certificates> getCertByUser(@Param("name") String username);
